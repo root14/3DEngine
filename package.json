@@ -1,0 +1,20 @@
+{
+  "name": "3dengine",
+  "version": "1.0.0",
+  "description": "A basic 3D engine built from javascript & webassembly from scratch.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc --project tsconfig.json",
+    "build:watch": "tsc --project tsconfig.json --watch"
+  },
+  "author": "Dylan Deruy",
+  "license": "ISC",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.50.0",
+    "@typescript-eslint/parser": "^5.50.0",
+    "eslint": "^8.33.0",
+    "prettier": "2.8.3",
+    "typescript": "^4.9.5"
+  }
+}
