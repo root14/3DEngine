@@ -1,4 +1,6 @@
 import { Color } from "./Color.js";
+import { LightType } from "./light/LightType.js";
+import { PointLight } from "./light/PointLight.js";
 import { Raytracing } from "./Raytracing.js";
 import { Scene } from "./Scene.js";
 import { Vector3D } from "./Vector3D.js";
@@ -64,7 +66,6 @@ export class Canvas {
   }
 
   render(scene: Scene) {
-    console.log(scene.objects);
     for (let i = -(this.height / 2); i < this.height / 2; i++) {
       for (let j = -(this.width / 2); j < this.width / 2; j++) {
         // for every pixel trace a ray to viewport point
@@ -72,11 +73,13 @@ export class Canvas {
         const color =
           Raytracing.raytracing(
             scene.objects,
+            scene.lights,
             scene.camera.position,
             direction,
             1,
             Infinity
           ) ?? this.backgroundColor;
+
         this.drawPixel(j, i, color);
       }
     }

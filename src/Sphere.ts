@@ -1,7 +1,7 @@
-import { Vector3D } from "./Vector3D.js";
-import { GameObject } from "./GameObject.js";
+import { GameObject } from "./game-object/GameObject.js";
 import { Color } from "./Color.js";
-import { GameObjectTypes } from "./models/GameObjectTypes.js";
+import { GameObjectTypes } from "./game-object/GameObjectTypes.js";
+import { Point3D } from "./Point.js";
 
 export class Sphere extends GameObject {
   radius: number;
@@ -12,7 +12,7 @@ export class Sphere extends GameObject {
     radius,
     color,
   }: {
-    position: Vector3D;
+    position: Point3D;
     radius: number;
     color: Color;
   }) {

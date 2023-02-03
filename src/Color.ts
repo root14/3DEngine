@@ -11,6 +11,14 @@ export class Color {
     this._alpha = alpha;
   }
 
+  static applyIntensity(color: Color, intensity: number): Color {
+    return new Color(
+      color.red * intensity,
+      color.green * intensity,
+      color.blue * intensity
+    );
+  }
+
   set red(value: number) {
     this._red = Math.min(Math.max(value, 0), 255);
   }

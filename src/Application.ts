@@ -5,7 +5,7 @@ export class Application {
   private width: number;
   private height: number;
   private canvas: Canvas;
-  private scene: Scene;
+  private _scene: Scene;
 
   constructor(width: number, height: number) {
     this.width = width;
@@ -21,12 +21,16 @@ export class Application {
     document.body.appendChild(this.canvas.htmlElement);
   }
 
+  get scene(): Scene {
+    return this._scene;
+  }
+
   addScene(scene) {
-    this.scene = scene;
+    this._scene = scene;
     this.canvas.render(scene);
   }
 
   render() {
-    this.canvas.render(this.scene);
+    this.canvas.render(this._scene);
   }
 }

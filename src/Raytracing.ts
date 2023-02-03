@@ -1,16 +1,19 @@
-import { GameObjectTypes } from "./models/GameObjectTypes.js";
-import { GameObject } from "./GameObject.js";
+import { GameObjectTypes } from "./game-object/GameObjectTypes.js";
+import { GameObject } from "./game-object/GameObject.js";
 import { Vector3D } from "./Vector3D.js";
 import { Sphere } from "./Sphere.js";
+import { Point3D } from "./Point.js";
+import { Light } from "./light/Light.js";
+import { Scene } from "./Scene.js";
+import { LightType } from "./light/LightType.js";
+import { PointLight } from "./light/PointLight.js";
+import { DirectionalLight } from "./light/DirectionalLight.js";
+import { Color } from "./Color.js";
 
 export class Raytracing {
-  static intersectSphere(
-    origin: Vector3D,
-    direction: Vector3D,
-    sphere: Sphere
-  ) {
+  static intersectSphere(origin: Point3D, direction: Vector3D, sphere: Sphere) {
     // vector origin camera > center of sphere
-    const CO = Vector3D.substract(origin, sphere.position);
+    const CO = Point3D.getVector(sphere.position, origin);
     const a = Vector3D.dotProduct(direction, direction);
     const b = 2 * Vector3D.dotProduct(CO, direction);
     const c = Vector3D.dotProduct(CO, CO) - sphere.radius * sphere.radius;
@@ -25,9 +28,35 @@ export class Raytracing {
     return { t1, t2 };
   }
 
+  static computeLighting(lights: Light[], P: Point3D, N: Vector3D) {
+    let intensity = 0.0;
+    for (let light of lights) {
+      if (light.type === LightType.Ambient) {
+        intensity += light.intensity;
+      } else {
+        let L;
+        if (light instanceof PointLight) {
+          L = Point3D.getVector(light.position, P);
+        }
+        if (light instanceof DirectionalLight) {
+          L = light.direction;
+        }
+
+        const normNL = Vector3D.dotProduct(N, L);
+        if (normNL > 0) {
+          intensity +=
+            light.intensity *
+            (normNL / (Vector3D.normalize(N) * Vector3D.normalize(L)));
+        }
+      }
+    }
+    return intensity;
+  }
+
   static raytracing(
     gameObjects: GameObject[],
-    Origin: Vector3D,
+    lights: Light[],
+    Origin: Point3D,
     Distance: Vector3D,
     tMin: number,
     tMax: number
@@ -58,6 +87,16 @@ export class Raytracing {
       return null;
     }
 
-    return closest_object.color;
+    // intersection is Origin Point (camera) + t1 * DistanceVector
+    const P = Vector3D.sum(
+      Origin,
+      Vector3D.getColinearVector(Distance, closest_t)
+    );
+
+    const N = Point3D.getUnitVector(P, closest_object.position);
+    return Color.applyIntensity(
+      closest_object.color,
+      this.computeLighting(lights, P, N)
+    );
   }
 }
